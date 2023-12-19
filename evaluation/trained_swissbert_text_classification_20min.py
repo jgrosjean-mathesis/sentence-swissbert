@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Load swissBERT model
-model_name= "/Users/juri/Dropbox/Studium/Masterarbeit/Models/model_8_final"
+model_name= "jgrosjean-mathesis/swissbert-for-sentence-embeddings"
 model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model.set_default_language("de_CH")
@@ -30,8 +30,8 @@ def generate_sentence_embedding(sentence):
     return embedding
 
 # Set source file path
-train_file_path = "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_train"
-test_file_path = "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_test"
+train_file_path = "specify train file path"
+test_file_path = "specify test file path"
 
 # Get training data
 train_pattern = os.path.join(train_file_path, '*.json')
@@ -42,9 +42,6 @@ train_categories_with_content = {}
 category_film = ["Film", "TV-Serien"]
 category_corona = ["Corona-Impfung", "Coronavirus", "Pandemie", "Omikron", "Coronavirus-Mutation"]
 category_football = ["Fussball", "Fussball-Nationalteam"]
-
-train_index = 0
-train_limit = 24000
 
 # iterate over articles to get data
 print("getting training data...")
@@ -93,11 +90,6 @@ for train_file in train_files:
             # add category and content to train category dict
             train_categories_with_content[content] = "football"
 
-    # index for testing
-    train_index += 1
-    if train_index > train_limit:
-        break
-
 # compute embeddings for content and store them in dict
 print("computing training embeddings...")
 train_categories_with_embeddings = {}
@@ -112,9 +104,6 @@ test_files = glob.glob(test_pattern)
 # define content list, id list and true test category dict with key=id and value=true category
 test_ids_with_category = {}
 test_ids_with_content = {}
-
-test_index = 0
-test_limit = 6000
 
 # get test data
 print("getting test data...")
@@ -173,12 +162,6 @@ for test_file in test_files:
             
             # add id and category to dict
             test_ids_with_category[id] = "football"
-
-
-    # index for testing
-    test_index += 1
-    if test_index > test_limit:
-        break
 
 # set up test embeddings
 print("calculating test embeddings...")
