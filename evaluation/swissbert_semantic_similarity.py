@@ -30,10 +30,7 @@ def generate_sentence_embedding(sentence):
     return embedding
 
 # Set source file path
-file_paths = [
-    "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_IT/20min_0_00_000_220512/20min_all_test",
-    "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_IT/20min_0_00_000_220512/20min_all_train"
-]
+file_paths = ["specify source file path"]
 
 # define summary and content lists
 ids = []
@@ -41,7 +38,7 @@ summaries = {}
 contents = {}
 
 index = 0
-limit = 1500
+limit = 1000
 
 print("extracting data...")
 for file_path in file_paths:
@@ -130,4 +127,4 @@ accuracy = f"{100*(correct_matches / total_cases):.2f}"
 print("\ntotal:\t\t", total_cases)
 print("correct:\t", correct_matches)
 print("wrong:\t\t", wrong_matches)
-print("\naccuracy IT:\t", accuracy, "%\n")
+print("\naccuracy:\t", accuracy, "%\n")
