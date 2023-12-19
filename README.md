@@ -1,0 +1,1 @@
+# swissbert-for-sentence-embeddings
