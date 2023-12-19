@@ -5,12 +5,9 @@ import json
 from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer('distiluse-base-multilingual-cased')
 model.max_seq_length = 512
-print("Max Sequence Length:", model.max_seq_length)
+
 # Set source file path
-file_paths = [
-    "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_test",
-    "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_train"
-]
+file_paths = ["specify source path"]
 
 # define summary and content lists
 ids = []
@@ -18,7 +15,7 @@ summaries = {}
 contents = {}
 
 index = 0
-limit = 1499
+limit = 1000
 
 print("extracting data...")
 for file_path in file_paths:
@@ -107,4 +104,4 @@ accuracy = f"{100*(correct_matches / total_cases):.2f}"
 print("\ntotal:\t\t", total_cases)
 print("correct:\t", correct_matches)
 print("wrong:\t\t", wrong_matches)
-print("\naccuracy DE:\t", accuracy, "%\n")
+print("\naccuracy:\t", accuracy, "%\n")
