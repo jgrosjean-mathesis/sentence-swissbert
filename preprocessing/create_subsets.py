@@ -2,8 +2,8 @@ import os
 import glob
 import random
 
-input_directory = "/srv/scratch2/grosjean/Masterarbeit/data"
-output_directory = "/srv/scratch2/grosjean/Masterarbeit/data_subsets"
+input_directory = "specify input directory"
+output_directory = "specify output directory"
 
 # Create output directory if it doesn't exist
 os.makedirs(output_directory, exist_ok=True)
