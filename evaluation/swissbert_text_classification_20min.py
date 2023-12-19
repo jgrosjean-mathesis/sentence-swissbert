@@ -43,9 +43,6 @@ category_film = ["Film", "TV-Serien"]
 category_corona = ["Corona-Impfung", "Coronavirus", "Pandemie", "Omikron", "Coronavirus-Mutation"]
 category_football = ["Fussball", "Fussball-Nationalteam"]
 
-train_index = 0
-train_limit = 24000
-
 # iterate over articles to get data
 print("getting training data...")
 for train_file in train_files:
@@ -93,11 +90,6 @@ for train_file in train_files:
             # add category and content to train category dict
             train_categories_with_content[content] = "football"
 
-    # index for testing
-    train_index += 1
-    if train_index > train_limit:
-        break
-
 # compute embeddings for content and store them in dict
 print("computing training embeddings...")
 train_categories_with_embeddings = {}
@@ -112,9 +104,6 @@ test_files = glob.glob(test_pattern)
 # define content list, id list and true test category dict with key=id and value=true category
 test_ids_with_category = {}
 test_ids_with_content = {}
-
-test_index = 0
-test_limit = 6000
 
 # get test data
 print("getting test data...")
@@ -173,12 +162,6 @@ for test_file in test_files:
             
             # add id and category to dict
             test_ids_with_category[id] = "football"
-
-
-    # index for testing
-    test_index += 1
-    if test_index > test_limit:
-        break
 
 # set up test embeddings
 print("calculating test embeddings...")
