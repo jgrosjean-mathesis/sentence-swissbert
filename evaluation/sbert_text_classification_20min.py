@@ -1,4 +1,4 @@
-import os
+fy import os
 import glob
 import json
 
@@ -6,8 +6,8 @@ from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer('distiluse-base-multilingual-cased')
 
 # Set source file path
-train_file_path = "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_train"
-test_file_path = "/Users/juri/Dropbox/Studium/Masterarbeit/Data/SwissText_2023_TS_DE/20min_0_00_000_220512/20min_all_test"
+train_file_path = "specify train file path"
+test_file_path = "specify test file path"
 
 # Get training data
 train_pattern = os.path.join(train_file_path, '*.json')
