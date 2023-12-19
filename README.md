@@ -1,9 +1,5 @@
 # swissbert-for-sentence-embeddings
 
----
-{}
----
-
 <!-- Provide a quick summary of what the model is/does. -->
 
 The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via unsupervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1 million Swiss news articles published in 2022 from [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
