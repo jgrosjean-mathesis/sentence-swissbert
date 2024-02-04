@@ -117,7 +117,7 @@ German, French, Italian and Romansh documents in the [Swissdox@LiRI database](ht
 
 This model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552). The positive sequence pairs consist of the article body vs. its title and lead, wihout any hard negatives.
 
-The fine-tuning script can be accessed [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/training).
+The fine-tuning script can be accessed [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/tree/main/training).
 
 #### Training Hyperparameters
 
@@ -142,14 +142,14 @@ The two evaluation tasks make use of the [20 Minuten dataset](https://www.zora.u
 
 Embeddings are computed for the summary and content of each document. Subsequently, the embeddings are matched by maximizing cosine similarity scores between each summary and content embedding pair.
 
-The performance is measured via accuracy, i.e. the ratio of correct vs. total matches. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/evaluation).
+The performance is measured via accuracy, i.e. the ratio of correct vs. total matches. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/tree/main/evaluation).
 
 
 #### Evaluation via Text Classification
 
 <!-- These are the evaluation metrics being used, ideally with a description of why. -->
 
-Articles with the topic tags "movies/tv series", "corona" and "football" (or related) are filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbors approach. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/evaluation).
+Articles with the topic tags "movies/tv series", "corona" and "football" (or related) are filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbors approach. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/tree/main/evaluation).
 
 Note: For French, Italian and Romansh, the training data remains in German, while the test data comprises of translations. This provides insights in the model's abilities in cross-lingual transfer.
 
