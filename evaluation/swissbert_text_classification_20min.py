@@ -1,16 +1,40 @@
 import os
 import glob
 import json
+import torch
+
+from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics import classification_report
+from sklearn.metrics.pairwise import cosine_similarity
 
-from sentence_transformers import SentenceTransformer, util
-
-model = SentenceTransformer('distiluse-base-multilingual-cased-v1')
-model.max_seq_length = 512
+# load swissBERT model
+model_name = "ZurichNLP/swissbert"
+model = AutoModel.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model.set_default_language("de_CH")
+print("Language set to de_CH")
 model.eval()
 
+def generate_sentence_embedding(sentence):
+
+    # tokenize input sentence
+    inputs = tokenizer(sentence, padding=True, truncation=True, return_tensors="pt", max_length=512)
+
+    # take tokenized input and pass it through the model
+    with torch.no_grad():
+        outputs = model(**inputs)
+
+    # extract sentence embeddings via mean pooling
+    token_embeddings = outputs.last_hidden_state
+    attention_mask = inputs['attention_mask'].unsqueeze(-1).expand(token_embeddings.size()).float()
+    sum_embeddings = torch.sum(token_embeddings * attention_mask, 1)
+    sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
+    embedding = sum_embeddings / sum_mask
+
+    return embedding
+
 # set source file path
-train_file_path = "specify source file path"
+train_file_path = "define source file path"
 
 # get training data
 train_pattern = os.path.join(train_file_path, '*.json')
@@ -27,7 +51,7 @@ print("getting training data...")
 for train_file in train_files:
     with open(train_file, 'r', encoding='utf-8') as article:
         data = json.load(article)
-
+    
         # check if category is empty
         categories = data.get("category", None)
         if not categories:
@@ -72,9 +96,23 @@ print("computing training embeddings...")
 train_categories_with_embeddings = {}
 
 for train_content, train_category in train_categories_with_content.items():
-    train_categories_with_embeddings[model.encode(train_content, convert_to_tensor=True)] = train_category
+    train_categories_with_embeddings[generate_sentence_embedding(train_content)] = train_category
 
-def evaluation(test_file_path, train_categories_with_embeddings):
+def evaluation(test_file_path, model, train_categories_with_embeddings):
+
+    # Adjust language according to test data
+    if "TS_DE" in test_file_path:
+        model.set_default_language("de_CH")
+        print("Language set to de_CH")
+    elif "TS_FR" in test_file_path:
+        model.set_default_language("fr_CH")
+        print("Language set to fr_CH")
+    elif "TS_IT" in test_file_path:
+        model.set_default_language("it_CH")
+        print("Language set to it_CH")
+    elif "TS_RM" in test_file_path:
+        model.set_default_language("rm_CH")
+        print("Language set to rm_CH")
 
     # get test data
     test_pattern = os.path.join(test_file_path, '*.json')
@@ -89,6 +127,7 @@ def evaluation(test_file_path, train_categories_with_embeddings):
     for test_file in test_files:
         with open(test_file, 'r', encoding='utf-8') as article:
             data = json.load(article)
+        
             # check if category is empty
             categories = data.get("category", [])
             if not categories:
@@ -146,7 +185,7 @@ def evaluation(test_file_path, train_categories_with_embeddings):
     test_ids_with_embeddings = {}
 
     for test_id, test_content in test_ids_with_content.items():
-        test_ids_with_embeddings[test_id] = model.encode(test_content, convert_to_tensor=True)
+        test_ids_with_embeddings[test_id] = generate_sentence_embedding(test_content)
 
     # predict category for test data and calculate accuracy
     print("predicting categories via cosine similarity...")
@@ -159,8 +198,8 @@ def evaluation(test_file_path, train_categories_with_embeddings):
 
         # calculate cosine similarity scores for test content and all training embeddings
         for train_embedding, train_category in train_categories_with_embeddings.items():
-            cosine_score = util.cos_sim(test_embedding, train_embedding)
-            cosine_score_dict[cosine_score] = train_category
+            cosine_score = cosine_similarity(test_embedding, train_embedding)
+            cosine_score_dict[torch.from_numpy(cosine_score)] = train_category
 
         # find the highest cosine similarity
         max_cosine_score = max(cosine_score_dict.keys())
@@ -181,10 +220,10 @@ def evaluation(test_file_path, train_categories_with_embeddings):
     print("\nClassification Report for:", test_file_path)
     print(class_report)
 
-# define test data paths and category labels
+# Define test data paths and corresponding category labels
 test_data_paths = [specify list of test data paths]
 
 # evaluate for each test data path
 for test_path in test_data_paths:
-    evaluation(test_path, train_categories_with_embeddings)
+    evaluation(test_path, model, train_categories_with_embeddings)
     print("\n")
