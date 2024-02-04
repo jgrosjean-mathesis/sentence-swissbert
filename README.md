@@ -1,8 +1,8 @@
-# swissbert-for-sentence-embeddings
+# sentence-swissbert
 
 <!-- Provide a quick summary of what the model is/does. -->
 
-The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via unsupervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1 million Swiss news articles published in 2022 from [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
+The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1 million Swiss news articles published in 2022 from [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
 2019), the average of the last hidden states (pooler_type=avg) is used as sentence representation.
 
 ![image/png](https://cdn-uploads.huggingface.co/production/uploads/6564ab8d113e2baa55830af0/zUUu7WLJdkM2hrIE5ev8L.png)
@@ -44,7 +44,7 @@ def generate_sentence_embedding(sentence, language):
         model.set_default_language("it_CH")
     if "rm" in language:
         model.set_default_language("rm_CH")
-    
+
     # Tokenize input sentence
     inputs = tokenizer(sentence, padding=True, truncation=True, return_tensors="pt", max_length=512)
 
@@ -52,13 +52,19 @@ def generate_sentence_embedding(sentence, language):
     with torch.no_grad():
         outputs = model(**inputs)
 
-    # Extract average sentence embeddings from the last hidden layer
-    embedding = outputs.last_hidden_state.mean(dim=1)
+    # Extract sentence embeddings via mean pooling
+    token_embeddings = outputs.last_hidden_state
+    attention_mask = inputs['attention_mask'].unsqueeze(-1).expand(token_embeddings.size()).float()
+    sum_embeddings = torch.sum(token_embeddings * attention_mask, 1)
+    sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
+    embedding = sum_embeddings / sum_mask
 
     return embedding
 
-sentence_embedding = generate_sentence_embedding("Wir feiern am 1. August den Schweizer Nationalfeiertag.", language="de")
-print(sentence_embedding)
+# Try it out
+sentence_0 = "Wir feiern am 1. August den Schweizer Nationalfeiertag."
+sentence_0_embedding = generate_sentence_embedding(sentence_0, language="de")
+print(sentence_0_embedding)
 ```
 Output:
 ```
@@ -95,7 +101,7 @@ The cosine score for ['Der Zug kommt um 9 Uhr in Zürich an.'] and ['Le train ar
 ## Bias, Risks, and Limitations
 
 <!-- This section is meant to convey both technical and sociotechnical limitations. -->
-This model has been trained on news articles only. Hence, it might not perform as well on other text classes.
+The sentence swissBERT model has been trained on news articles only. Hence, it might not perform as well on other text classes. Furthermore, it is specific to a Switzerland-related context, which means it probably does not perform as well on text that does not fall in that category. Additionally, the model has neither been trained nor evaluated for machine translation tasks.
 
 ## Training Details
 
@@ -103,65 +109,66 @@ This model has been trained on news articles only. Hence, it might not perform a
 
 <!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
 
-German, French, Italian and Romansh documents in the [Swissdox@LiRI database](https://t.uzh.ch/1hI) from 2022.
+German, French, Italian and Romansh documents in the [Swissdox@LiRI database](https://t.uzh.ch/1hI) up to 2023.
 
 ### Training Procedure 
 
 <!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
 
-This model was finetuned via unsupervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552). The same sequence is passed to the encoder twice and the distance between the two resulting embeddings is minimized.  Because of the drop-out, it will be encoded at slightly different positions in the vector space.
+This model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552). The positive sequence pairs consist of the article body vs. its title and lead, wihout any hard negatives.
 
-The fine-tuning script can be accessed [here](Link).
+The fine-tuning script can be accessed [here](https://github.com/jgrosjean-mathesis/swissbert-for-sentence-embeddings/tree/main).
 
 #### Training Hyperparameters
 
 - Number of epochs: 1
 - Learning rate: 1e-5
 - Batch size: 512
+- Temperature: 0.05
 
 ## Evaluation
 
 <!-- This section describes the evaluation protocols and provides the results. -->
 
-#### Baseline
-
-The first baseline is [distiluse-base-multilingual-cased](https://www.sbert.net/examples/training/multilingual/README.html), a high-performing Sentence Transformer model that is able to process German, French and Italian (and more).
-
-The second baseline uses mean pooling embeddings from the last hidden state of the original swissbert model.
-
 #### Testing Data
 
 <!-- This should link to a Dataset Card if possible. -->
 
-The two evaluation tasks make use of the [20 Minuten dataset](https://www.zora.uzh.ch/id/eprint/234387/) compiled by Kew et al. (2023), which contains Swiss news articles with topic tags and summaries. Parts of the dataset were automatically translated to French and Italian using a Google Cloud API.
+The two evaluation tasks make use of the [20 Minuten dataset](https://www.zora.uzh.ch/id/eprint/234387/) compiled by Kew et al. (2023), which contains Swiss news articles with topic tags and summaries. Parts of the dataset were automatically translated to French, Italian using a Google Cloud API and to Romash via a [Textshuttle](https://textshuttle.com/en) API.
 
 #### Evaluation via Semantic Textual Similarity
 
 <!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
 
-Embeddings are computed for the summary and content of each document. Subsequently, the embeddings are matched by minimizing cosine similarity scores betweend each summary and content embedding pair.
+Embeddings are computed for the summary and content of each document. Subsequently, the embeddings are matched by maximizing cosine similarity scores between each summary and content embedding pair.
 
-The performance is measured via accuracy, i.e. the ratio of correct vs. incorrect matches.
+The performance is measured via accuracy, i.e. the ratio of correct vs. total matches. The script can be found [here](https://github.com/jgrosjean-mathesis/swissbert-for-sentence-embeddings/tree/main).
 
 
 #### Evaluation via Text Classification
 
 <!-- These are the evaluation metrics being used, ideally with a description of why. -->
 
-Articles with the topic tags "movies/tv series", "corona" and "football" (or related) are filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbor approach.
+Articles with the topic tags "movies/tv series", "corona" and "football" (or related) are filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbors approach. The script can be found [here](https://github.com/jgrosjean-mathesis/swissbert-for-sentence-embeddings/tree/main).
 
-Note: For French and Italian, the training data remains in German, while the test data comprises of translations. This provides insights in the model's abilities in cross-lingual transfer.
+Note: For French, Italian and Romansh, the training data remains in German, while the test data comprises of translations. This provides insights in the model's abilities in cross-lingual transfer.
 
 ### Results
 
-Making use of an unsupervised training approach, Swissbert for Sentence Embeddings achieves comparable results as the best-performing multilingual Sentence-BERT model in the semantic textual similarity task for German and outperforms it in the French text classification task.
+Making use of an unsupervised training approach, Swissbert for Sentence Embeddings achieves comparable results as the best-performing multilingual Sentence-BERT model (distiluse-base-multilingual-cased) in the semantic textual similarity task for German and outperforms it in the French text classification task.
 
-| Evaluation task        |swissbert |         |swissbert for SE|         |Sentence-BERT|         |
-|------------------------|----------|---------|----------------|---------|-------------|---------|
-|                        |accuracy  |f1-score |accuracy        |f1-score |accuracy     |f1-score |
-| Semantic Similarity DE | 83.80    | -       |**87.70**       |    -    |**87.70**    | -       |
-| Semantic Similarity FR | 82.30    | -       | 84.02          |    -    |**91.10**    | -       |
-| Semantic Similarity IT | 83.00    | - `     | 84.00          |    -    |**89.80**    | -       |
-| Text Classification DE | 95.76    |**91.99**| 94.70          |  89.43  |  95.61      | 91.20   |
-| Text Classification FR | 94.55    | 88.52   | 95.30          |**89.91**|  94.55      | 89.82   |
-| Text Classification IT | 93.48    | 88.29   | 94.85          |  90.36  |  95.91      |**92.05**|
+| Evaluation task        |swissbert |         |swissbert for SE  |         |Sentence-BERT|         |
+|------------------------|----------|---------|------------------|---------|-------------|---------|
+|                        |accuracy  |f1-score |accuracy          |f1-score |accuracy     |f1-score |
+| Semantic Similarity DE | 83.80    | -       |**93.70**         |    -    |  87.70      |    -    |
+| Semantic Similarity FR | 82.30    | -       |**92.90**         |    -    |  91.10      |    -    |
+| Semantic Similarity IT | 83.00    | -       |**91.20**         |    -    |  89.80      |    -    |
+| Semantic Similarity RM | 78.80    | -       |**90.80**         |    -    |  67.90      |    -    |
+| Text Classification DE | 95.76    | 91.99   |  96.36           |**92.11**|  96.37      |  96.34  |
+| Text Classification FR | 94.55    | 88.52   |  95.76           |**90.94**|  99.35      |  99.35  |
+| Text Classification IT | 93.48    | 88.29   |  95.44           |  90.44  |  95.91      |**92.05**|
+| Text Classification RM |          |         |                  |         |             |         |
+
+#### Baseline
+
+The baseline uses mean pooling embeddings from the last hidden state of the original swissbert model and the currently best-performing Sentence-BERT model [distiluse-base-multilingual-cased-v1](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1)
