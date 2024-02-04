@@ -3,27 +3,21 @@ import glob
 import json
 
 from sentence_transformers import SentenceTransformer, util
-model = SentenceTransformer('distiluse-base-multilingual-cased')
+model = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 model.max_seq_length = 512
 
-# Set source file path
-file_paths = ["specify source path"]
+# set source file path(s)
+file_paths = ["specify source path list"]
 
 # define summary and content lists
 ids = []
 summaries = {}
 contents = {}
 
-index = 0
-limit = 1000
-
 print("extracting data...")
 for file_path in file_paths:
     pattern = os.path.join(file_path, '*.json')
     json_files = glob.glob(pattern)
-
-    # Exclude files that start with '2022'
-    json_files = [f for f in json_files if not os.path.basename(f).startswith('2022')]
 
     # iterate over articles
     for json_file in json_files:
@@ -45,10 +39,6 @@ for file_path in file_paths:
                 
                 summary = "\n".join([str(value) for value in raw_summary.values()])
                 summaries[id] = summary
-
-            index += 1
-            if index >= limit:
-                break
 
 # compute embedding and set up embedding dictionaries
 summary_embeddings = {}
