@@ -2,7 +2,7 @@
 
 <!-- Provide a quick summary of what the model is/does. -->
 
-The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1 million Swiss news articles published in 2022 from [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
+The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1.5 million Swiss news articles from up to 2022 retrieved via [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
 2019), the average of the last hidden states (pooler_type=avg) is used as sentence representation.
 
 ![image/png](https://cdn-uploads.huggingface.co/production/uploads/6564ab8d113e2baa55830af0/zUUu7WLJdkM2hrIE5ev8L.png)
@@ -157,17 +157,17 @@ Note: For French, Italian and Romansh, the training data remains in German, whil
 
 Making use of an unsupervised training approach, Swissbert for Sentence Embeddings achieves comparable results as the best-performing multilingual Sentence-BERT model (distiluse-base-multilingual-cased) in the semantic textual similarity task for German and outperforms it in the French text classification task.
 
-| Evaluation task        |swissbert |         |swissbert for SE  |         |Sentence-BERT|         |
-|------------------------|----------|---------|------------------|---------|-------------|---------|
-|                        |accuracy  |f1-score |accuracy          |f1-score |accuracy     |f1-score |
-| Semantic Similarity DE | 83.80    | -       |**93.70**         |    -    |  87.70      |    -    |
-| Semantic Similarity FR | 82.30    | -       |**92.90**         |    -    |  91.10      |    -    |
-| Semantic Similarity IT | 83.00    | -       |**91.20**         |    -    |  89.80      |    -    |
-| Semantic Similarity RM | 78.80    | -       |**90.80**         |    -    |  67.90      |    -    |
-| Text Classification DE | 95.76    | 91.99   |  96.36           |**92.11**|  96.37      |  96.34  |
-| Text Classification FR | 94.55    | 88.52   |  95.76           |**90.94**|  99.35      |  99.35  |
-| Text Classification IT | 93.48    | 88.29   |  95.44           |  90.44  |  95.91      |**92.05**|
-| Text Classification RM |          |         |                  |         |             |         |
+| Evaluation task        |Swissbert |           |Sentence Swissbert|           |Sentence-BERT|           |
+|------------------------|----------|-----------|------------------|-----------|-------------|-----------|
+|                        |accuracy  |f1-score   |accuracy          |f1-score   |accuracy     |f1-score   |
+| Semantic Similarity DE | 83.80 %  | -         |**93.70 %**       |    -      |  87.70 %    |    -      |
+| Semantic Similarity FR | 82.30 %  | -         |**92.90 %**       |    -      |  91.10 %    |    -      |
+| Semantic Similarity IT | 83.00 %  | -         |**91.20 %**       |    -      |  89.80 %    |    -      |
+| Semantic Similarity RM | 78.80 %  | -         |**90.80 %**       |    -      |  67.90 %    |    -      |
+| Text Classification DE | 96.00 %  |  96.00 %  |  98.00 %         |**98.00 %**|  96.37 %    |  96.34 %  |
+| Text Classification FR | 99.35 %  |**99.35 %**|  99.35 %         |**99.35 %**|  99.35 %    |**99.35 %**|
+| Text Classification IT | 98.00 %  |  98.00 %  |  99.35 %         |**99.35 %**|  99.35 %    |**99.35 %**|
+| Text Classification RM | 81.00 %  |  79.00 %  |  96.00 %         |**96.00 %**|  94.41 %    |  94.36 %  |
 
 #### Baseline
 
