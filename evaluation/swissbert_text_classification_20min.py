@@ -7,8 +7,8 @@ from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics import classification_report
 from sklearn.metrics.pairwise import cosine_similarity
 
-# load swissBERT model
-model_name = "ZurichNLP/swissbert"
+# load desired swissBERT model
+model_name = "ZurichNLP/swissbert" # or "jgrosjean-mathesis/sentence-swissbert"
 model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model.set_default_language("de_CH")
