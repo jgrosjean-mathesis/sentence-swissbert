@@ -34,9 +34,6 @@ from transformers.tokenization_utils_base import PaddingStrategy
 from typing import List, Dict, Union
 import torch
 
-
-disable_caching()
-
 require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/token-classification/requirements.txt")
 
 logger = logging.getLogger(__name__)
@@ -130,7 +127,6 @@ class DataTrainingArguments:
         },
     )
 
-
 def main():
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
@@ -198,13 +194,13 @@ def main():
     data_files = {}
     if data_args.train_file is not None:
         directory_path = data_args.train_file
-        file_paths = glob.glob(os.path.join(directory_path, '*.txt'))
+        file_paths = glob.glob(os.path.join(directory_path, '*.tsv'))
         for file_path in file_paths:
             file_name = os.path.basename(file_path)
             key = os.path.splitext(file_name)[0]
             data_files[key] = file_path
-    extension = "text"
-    datasets = load_dataset(extension, data_files=data_files, cache_dir="./data/")
+    extension = "csv"
+    datasets = load_dataset(extension, data_files=data_files, cache_dir="./cache_data/", delimiter="\t")
 
     # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
     # https://huggingface.co/docs/datasets/loading_datasets.html.
@@ -273,7 +269,7 @@ def main():
         elif len(column_names) == 3:
             # Pair datasets with hard negatives
             sent0_cname = column_names[0]
-            ent1_cname = column_names[1]
+            sent1_cname = column_names[1]
             sent2_cname = column_names[2]
         elif len(column_names) == 1:
             # Unsupervised datasets
@@ -321,14 +317,13 @@ def main():
             return features
 
         train_dataset = datasets[dataset_name].map(
-            prepare_features,
-            batched=True,
-            remove_columns=column_names,
-            load_from_cache_file=not data_args.overwrite_cache,
+        prepare_features,
+        batched=True,
+        remove_columns=column_names,
+        load_from_cache_file=False
         )
-        return train_dataset
 
-    # Data collator
+        return train_dataset
 
     @dataclass
     class OurDataCollatorWithPadding:
@@ -374,7 +369,7 @@ def main():
 
     # Training
     if training_args.do_train:
-        dataset_badges = sorted(list(data_files.keys()))
+        dataset_batches = sorted(list(data_files.keys()))
         trainer = Trainer(
             model=model,
             args=training_args,
@@ -389,21 +384,21 @@ def main():
             checkpoint = last_checkpoint
 
         metrics_list = []
-        for dataset_badge in dataset_badges:
-            if "de" in dataset_badge:
+        for dataset_batch in dataset_batches:
+            if "de" in dataset_batch:
                 model.set_default_language("de_CH")
-                print("setting default language to de_CH for", dataset_badge)
-            elif "fr" in dataset_badge:
+                print("setting default language to de_CH for", dataset_batch)
+            elif "fr" in dataset_batch:
                 model.set_default_language("fr_CH")
-                print("setting default language to fr_CH for", dataset_badge)
-            elif "it" in dataset_badge:
+                print("setting default language to fr_CH for", dataset_batch)
+            elif "it" in dataset_batch:
                 model.set_default_language("it_CH")
-                print("setting default language to it_CH for", dataset_badge)
-            elif "rm" in dataset_badge:
+                print("setting default language to it_CH for", dataset_batch)
+            elif "rm" in dataset_batch:
                 model.set_default_language("rm_CH")
-                print("setting default language to rm_CH for", dataset_badge)    
+                print("setting default language to rm_CH for", dataset_batch)
 
-            train_dataset = prepare_train_data(dataset_badge)
+            train_dataset = prepare_train_data(dataset_batch)
             trainer.train_dataset = train_dataset
             train_result = trainer.train(resume_from_checkpoint=checkpoint)
             metrics_list.append(train_result.metrics)
