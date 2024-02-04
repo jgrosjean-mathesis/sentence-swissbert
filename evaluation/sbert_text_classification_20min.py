@@ -169,25 +169,22 @@ def evaluation(test_file_path, train_categories_with_embeddings):
         # append the predicted category to the dictionary with id as key
         test_ids_with_predicted_category[test_id] = predicted_category
    
-    # Set up confusion matrix
-    sorted_test_ids_with_category = sorted(test_ids_with_category.items(), key=lambda x: x[0])
-    sorted_test_ids_with_predicted_category = sorted(test_ids_with_predicted_category.items(), key=lambda x: x[0])
-
+    # set up confusion matrix
     y_true = [true_category for _, true_category in sorted_test_ids_with_category]
     y_pred = [predicted_category for _, predicted_category in sorted_test_ids_with_predicted_category]
 
 
-    # Calculate classification report
+    # calculate classification report
     class_report = classification_report(y_true, y_pred, digits=4)
 
-    # Print classification report
+    # print classification report
     print("\nClassification Report for:", test_file_path)
     print(class_report)
 
-# Define test data paths and corresponding category labels
+# define test data paths and category labels
 test_data_paths = ["define test data path list"]
 
-# Train and evaluate for each test data path
+# evaluate for each test data path
 for test_path in test_data_paths:
     evaluation(test_path, train_categories_with_embeddings)
     print("\n")
