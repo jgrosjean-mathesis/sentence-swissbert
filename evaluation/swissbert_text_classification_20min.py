@@ -9,10 +9,10 @@ model = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 model.max_seq_length = 512
 model.eval()
 
-# Set source file path
+# set source file path
 train_file_path = "specify source file path"
 
-# Get training data
+# get training data
 train_pattern = os.path.join(train_file_path, '*.json')
 train_files = glob.glob(train_pattern)
 
@@ -76,7 +76,7 @@ for train_content, train_category in train_categories_with_content.items():
 
 def evaluation(test_file_path, train_categories_with_embeddings):
 
-    # Get test data
+    # get test data
     test_pattern = os.path.join(test_file_path, '*.json')
     test_files = glob.glob(test_pattern)
 
@@ -169,25 +169,22 @@ def evaluation(test_file_path, train_categories_with_embeddings):
         # append the predicted category to the dictionary with id as key
         test_ids_with_predicted_category[test_id] = predicted_category
    
-    # Set up confusion matrix
-    sorted_test_ids_with_category = sorted(test_ids_with_category.items(), key=lambda x: x[0])
-    sorted_test_ids_with_predicted_category = sorted(test_ids_with_predicted_category.items(), key=lambda x: x[0])
-
+    # set up confusion matrix
     y_true = [true_category for _, true_category in sorted_test_ids_with_category]
     y_pred = [predicted_category for _, predicted_category in sorted_test_ids_with_predicted_category]
 
 
-    # Calculate classification report
+    # calculate classification report
     class_report = classification_report(y_true, y_pred, digits=4)
 
-    # Print classification report
-    print("\nClassification Report for:", test_file_path[-40:-36])
+    # print classification report
+    print("\nClassification Report for:", test_file_path)
     print(class_report)
 
-# Define test data paths and corresponding category labels
+# define test data paths and category labels
 test_data_paths = [specify list of test data paths]
 
-# Train and evaluate for each test data path
+# evaluate for each test data path
 for test_path in test_data_paths:
     evaluation(test_path, train_categories_with_embeddings)
     print("\n")
