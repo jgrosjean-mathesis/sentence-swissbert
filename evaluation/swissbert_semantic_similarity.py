@@ -6,30 +6,30 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load swissBERT model
-model_name="ZurichNLP/swissbert"
+# load desired swissBERT model
+model_name="ZurichNLP/swissbert" # or "jgrosjean-mathesis/sentence-swissbert"
 model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model.set_default_language("it_CH")
+model.set_default_language("specify language")
 
 def generate_sentence_embedding(sentence):
 
-    # Tokenize input sentence
+    # tokenize input sentence
     inputs = tokenizer(sentence, padding=True, truncation=True, return_tensors="pt", max_length=512)
 
-    # Set the model to evaluation mode
+    # set the model to evaluation mode
     model.eval()
 
-    # Take tokenized input and pass it through the model
+    # take tokenized input and pass it through the model
     with torch.no_grad():
         outputs = model(**inputs)
 
-    # Extract average sentence embeddings from the last hidden layer
+    # extract average sentence embeddings from the last hidden layer
     embedding = outputs.last_hidden_state.mean(dim=1)
 
     return embedding
 
-# Set source file path
+# set source file path
 file_paths = ["specify source file path"]
 
 # define summary and content lists
@@ -44,9 +44,6 @@ print("extracting data...")
 for file_path in file_paths:
     pattern = os.path.join(file_path, '*.json')
     json_files = glob.glob(pattern)
-
-    # Exclude files that start with '2022'
-    json_files = [f for f in json_files if not os.path.basename(f).startswith('2022')]
 
     # iterate over articles
     for json_file in json_files:
