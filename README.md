@@ -29,7 +29,7 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 
 # Load swissBERT for sentence embeddings model
-model_name = "jgrosjean-mathesis/swissbert-for-sentence-embeddings"
+model_name = "jgrosjean-mathesis/sentence-swissbert"
 model = AutoModel.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
