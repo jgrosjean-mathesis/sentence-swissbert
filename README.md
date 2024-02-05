@@ -155,7 +155,7 @@ Note: For French, Italian and Romansh, the training data remains in German, whil
 
 ### Results
 
-Making use of an unsupervised training approach, Swissbert for Sentence Embeddings achieves comparable results as the best-performing multilingual Sentence-BERT model (distiluse-base-multilingual-cased) in the semantic textual similarity task for German and outperforms it in the French text classification task.
+Sentence SwissBERT achieves comparable results as the best-performing multilingual Sentence-BERT model (distiluse-base-multilingual-cased) and outperforms it for German and Romansh.
 
 | Evaluation task        |Swissbert |           |Sentence Swissbert|           |Sentence-BERT|           |
 |------------------------|----------|-----------|------------------|-----------|-------------|-----------|
@@ -164,10 +164,10 @@ Making use of an unsupervised training approach, Swissbert for Sentence Embeddin
 | Semantic Similarity FR | 82.30 %  | -         |**92.90 %**       |    -      |  91.10 %    |    -      |
 | Semantic Similarity IT | 83.00 %  | -         |**91.20 %**       |    -      |  89.80 %    |    -      |
 | Semantic Similarity RM | 78.80 %  | -         |**90.80 %**       |    -      |  67.90 %    |    -      |
-| Text Classification DE | 96.00 %  |  96.00 %  |  98.00 %         |**98.00 %**|  96.37 %    |  96.34 %  |
-| Text Classification FR | 99.35 %  |**99.35 %**|  99.35 %         |**99.35 %**|  99.35 %    |**99.35 %**|
-| Text Classification IT | 98.00 %  |  98.00 %  |  99.35 %         |**99.35 %**|  99.35 %    |**99.35 %**|
-| Text Classification RM | 81.00 %  |  79.00 %  |  96.00 %         |**96.00 %**|  94.41 %    |  94.36 %  |
+| Text Classification DE | 96.11 %  |  96.12 %  |  98.00 %         |**98.00 %**|  96.37 %    |  96.34 %  |
+| Text Classification FR | 99.22 %  |  99.23 %  |  99.22 %         |  99.23 %  |  99.35 %    |**99.35 %**|
+| Text Classification IT | 97.55 %  |  97.55 %  |  99.23 %         |  99.23 %  |  99.35 %    |**99.35 %**|
+| Text Classification RM | 81.14 %  |  79.01 %  |  96.49 %         |**96.49 %**|  94.41 %    |  94.36 %  |
 
 #### Baseline
 
