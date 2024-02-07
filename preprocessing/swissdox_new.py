@@ -12,8 +12,11 @@ SEPARATOR = ' '
 
 SKIPPED_MEDIA = {
     "srf Audio",
+    "20 minutes online",
+    "20 minutes",
+    "20 minuten",
+    "20 minuten online"
 }
-
 
 @dataclass
 class SwissdoxArticle:
@@ -21,7 +24,10 @@ class SwissdoxArticle:
     medium_name: str
     language: str
     head_xml: str
+    subhead_xml: str
     content_xml: str
+    head_clean: str = None
+    subhead_clean: str = None
     content_clean: str = None
 
     def __str__(self):
@@ -38,8 +44,9 @@ class SwissdoxArticle:
 
 class SwissdoxData:
 
-    def __init__(self, tsv_path: Path):
+    def __init__(self, tsv_path: Path, output_tsv_path: Path):
         self.tsv_path = tsv_path
+        self.output_tsv_path = output_tsv_path
         self.cleaner = SwissdoxCleaner()
 
     def get_articles(self) -> Iterable[SwissdoxArticle]:
@@ -49,6 +56,7 @@ class SwissdoxData:
         with self.tsv_path.open() as f:
             csv.field_size_limit(1000000)
             reader = csv.DictReader(f, delimiter="\t")
+            articles = []
             for row in reader:
                 if any(row[key] is None for key in ["id", "language", "head", "subhead", "content"]):
                     logging.info(f"Skipping row with missing values: {row['id']}")
@@ -58,6 +66,7 @@ class SwissdoxData:
                     medium_name=row["medium_name"].strip(),
                     language=row["language"].strip(),
                     head_xml=row["head"].strip(),
+                    subhead_xml=row["subhead"].strip(),
                     content_xml=row["content"].strip(),
                 )
                 assert article.language in {"de", "fr", "it", "rm"}
@@ -70,12 +79,27 @@ class SwissdoxData:
                     num_duplicates += 1
                     continue
                 seen_article_hashes.add(article_hash)
+                article.head_clean = self.cleaner.clean(row["head"])
+                article.subhead_clean = self.cleaner.clean(row["subhead"])
                 article.content_clean = self.cleaner.clean(row["content"])
 
-                yield article
+                # Append the article to the list
+                articles.append(article)
 
         print(f"Skipped {num_duplicates} duplicates")
         print(f"Skipped {num_filtered} filtered articles")
+
+        # Write to TSV
+        self.write_to_tsv(articles)
+
+    def write_to_tsv(self, articles):
+        with self.output_tsv_path.open(mode='w', newline='', encoding='utf-8') as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter='\t')
+            tsv_writer.writerow(["Title_Lead", "Content"])
+            for article in articles:
+                title_lead = f"{article.head_clean} {article.subhead_clean}"
+                content = article.content_clean
+                tsv_writer.writerow([title_lead, content])
 
 
 class SwissdoxCleaner:
@@ -126,4 +150,3 @@ class SwissdoxCleaner:
             text = text[:-len(SEPARATOR)]
         text = text.strip()
         return text
-        
