@@ -247,6 +247,15 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
         model_args=model_args
     )
+
+    # freeze language adapters
+    logger.info("Freezing adapters")
+    for layer in model.roberta.encoder.layer:
+        if layer.output.adapter_layer_norm is not None:
+            for parameter in layer.output.adapter_layer_norm.parameters():
+                parameter.requires_grad = False
+        for parameter in layer.output.adapter_modules.parameters():
+            parameter.requires_grad = False
     
     # Tokenizer check: this script requires a fast tokenizer.
     if not isinstance(tokenizer, PreTrainedTokenizerFast):
