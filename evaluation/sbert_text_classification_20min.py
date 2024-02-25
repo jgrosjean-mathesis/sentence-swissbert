@@ -12,15 +12,36 @@ model.eval()
 # set source file path
 train_file_path = "specify source file path"
 
-# get training data
+
+# Get training data
 train_pattern = os.path.join(train_file_path, '*.json')
 train_files = glob.glob(train_pattern)
 
 # define category dict and category lists
 train_categories_with_content = {}
+category_economy = ["Wirtschaft"]
+category_accident = ["Unfall"]
+category_usa = ["USA"]
+category_germany = ["Deutschland"]
+category_ucraine_war = ["Russland", "Ukraine-Krieg", "Ukraine"]
+category_social_media = ["Social Media", "Instagram", "Facebook", "Twitter", "TikTok", "Snapchat"]
+category_switzerland = ["Schweiz"]
 category_film = ["Film", "TV-Serien", "TV", "Netflix", "Hollywood", "Fernsehen"]
 category_corona = ["Corona-Impfstoff", "Corona-Impfung", "Corona-Test", "Maskenpflicht", "Coronavirus", "Pandemie", "Omikron", "Booster-Impfung", "Corona-Fallzahlen", "Coronavirus-Mutation", "Covid-19", "Covid-Zertifikat", "Coronavirus-Mutation", "Corona-Patient"]
 category_football = ["Fussball", "European Super League", "Frauenfussball", "Frauenfussball-WM", "Fussball-Nationalteam", "Super League", "Fussball-EM", "Fussball-WM", "Champions League", "Premier League", "Bundesliga"]
+
+# add all possible categories to list in singles
+all_categories = []
+all_categories.extend(category_economy)
+all_categories.extend(category_accident)
+all_categories.extend(category_usa)
+all_categories.extend(category_germany)
+all_categories.extend(category_ucraine_war)
+all_categories.extend(category_social_media)
+all_categories.extend(category_switzerland)
+all_categories.extend(category_film)
+all_categories.extend(category_corona)
+all_categories.extend(category_football)
 
 # iterate over articles to get data
 print("getting training data...")
@@ -37,8 +58,101 @@ for train_file in train_files:
         elif isinstance(categories, str):
             categories = [categories]
 
-        # check if category is film
-        if set(categories).intersection(category_film) and not set(categories).intersection(category_corona) and not set(categories).intersection(category_football):
+        # set up category set without economy categories
+        all_categories_without_economy = [x for x in all_categories if x not in category_economy]
+
+        # check if category is only economy
+        if set(categories).intersection(category_economy) and not set(categories).intersection(all_categories_without_economy):
+
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+
+            # add category and content to train category dict
+            train_categories_with_content[content] = "economy"
+
+        # set up category set without accident categories
+        all_categories_without_accident = [x for x in all_categories if x not in category_accident]
+        
+        # check if category is only accident
+        if set(categories).intersection(category_accident) and not set(categories).intersection(all_categories_without_accident):
+
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+
+            # add category and content to train category dict
+            train_categories_with_content[content] = "accident"
+        
+        # set up category set without usa categories
+        all_categories_without_usa = [x for x in all_categories if x not in category_usa]
+        
+        # check if category is only usa
+        if set(categories).intersection(category_usa) and not set(categories).intersection(all_categories_without_usa):
+            
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+    
+            # add category and content to train category dict
+            train_categories_with_content[content] = "usa"
+        
+        # set up category set without germany categories
+        all_categories_without_germany = [x for x in all_categories if x not in category_germany]
+        
+        # check if category is only germany
+        if set(categories).intersection(category_germany) and not set(categories).intersection(all_categories_without_germany):
+            
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+    
+            # add category and content to train category dict
+            train_categories_with_content[content] = "germany"
+        
+        # set up category set without ucraine war categories
+        all_categories_without_ucraine_war = [x for x in all_categories if x not in category_ucraine_war]
+        
+        # check if category is only ucraine war
+        if set(categories).intersection(category_ucraine_war) and not set(categories).intersection(all_categories_without_ucraine_war):
+                
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+        
+            # add category and content to train category dict
+            train_categories_with_content[content] = "ucraine_war"
+
+        # set up category set without social media categories
+        all_categories_without_social_media = [x for x in all_categories if x not in category_social_media]
+        
+        # check if category is only social media
+        if set(categories).intersection(category_social_media) and not set(categories).intersection(all_categories_without_social_media):
+                    
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+            
+            # add category and content to train category dict
+            train_categories_with_content[content] = "social_media"
+        
+        # set up category set without switzerland categories
+        all_categories_without_switzerland = [x for x in all_categories if x not in category_switzerland]
+        
+        # check if category is only switzerland
+        if set(categories).intersection(category_switzerland) and not set(categories).intersection(all_categories_without_switzerland):
+                            
+            # extract content
+            raw_content = data.get("content", {})
+            content = "\n".join(raw_content.values())
+                
+            # add category and content to train category dict
+            train_categories_with_content[content] = "switzerland"
+
+        # set up category set without film categories
+        all_categories_without_film = [x for x in all_categories if x not in category_film]
+        # check if category is only film
+        if set(categories).intersection(category_film) and not set(categories).intersection(all_categories_without_film):
 
             # extract content
             raw_content = data.get("content", {})
@@ -47,8 +161,11 @@ for train_file in train_files:
             # add category and content to train category dict
             train_categories_with_content[content] = "film"
 
-        # check if category is corona
-        if set(categories).intersection(category_corona) and not set(categories).intersection(category_film) and not set(categories).intersection(category_football):
+        # set up category set without corona
+        all_categories_without_corona = [x for x in all_categories if x not in category_corona]
+
+        # check if category is only film
+        if set(categories).intersection(category_corona) and not set(categories).intersection(all_categories_without_corona):
 
             # extract content
             raw_content = data.get("content", {})
@@ -57,8 +174,11 @@ for train_file in train_files:
             # add category and content to train category dict
             train_categories_with_content[content] = "corona"
 
-        # check if category is football
-        if set(categories).intersection(category_football) and not set(categories).intersection(category_film) and not set(categories).intersection(category_corona):
+        # set up category set without football
+        all_categories_without_football = [x for x in all_categories if x not in category_football]
+        
+        # check if category is only football
+        if set(categories).intersection(category_football) and not set(categories).intersection(all_categories_without_football):
 
             # extract content
             raw_content = data.get("content", {})
@@ -76,7 +196,7 @@ for train_content, train_category in train_categories_with_content.items():
 
 def evaluation(test_file_path, train_categories_with_embeddings):
 
-    # get test data
+    # Get test data
     test_pattern = os.path.join(test_file_path, '*.json')
     test_files = glob.glob(test_pattern)
 
@@ -98,9 +218,106 @@ def evaluation(test_file_path, train_categories_with_embeddings):
             elif isinstance(categories, str):
                 categories = [categories]  # convert single string to list
 
+            # check if category is economy
+            if set(categories).intersection(category_economy) and not set(categories).intersection(all_categories_without_economy):
+                    
+                # extract id
+                id = data.get("id", {})
+    
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+    
+                # add id and category to dict
+                test_ids_with_category[id] = "economy"
+
+            # check if category is accident
+            if set(categories).intersection(category_accident) and not set(categories).intersection(all_categories_without_accident):
+                    
+                # extract id
+                id = data.get("id", {})
+        
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+        
+                # add id and category to dict
+                test_ids_with_category[id] = "accident"
+            
+            # check if category is usa
+            if set(categories).intersection(category_usa) and not set(categories).intersection(all_categories_without_usa):
+                        
+                # extract id
+                id = data.get("id", {})
+            
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+            
+                # add id and category to dict
+                test_ids_with_category[id] = "usa"
+            
+            # check if category is germany
+            if set(categories).intersection(category_germany) and not set(categories).intersection(all_categories_without_germany):
+                                
+                # extract id
+                id = data.get("id", {})
+                    
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+                    
+                # add id and category to dict
+                test_ids_with_category[id] = "germany"
+            
+            # check if category is ucraine war
+            if set(categories).intersection(category_ucraine_war) and not set(categories).intersection(all_categories_without_ucraine_war):
+                                    
+                # extract id
+                id = data.get("id", {})
+                        
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+                        
+                # add id and category to dict
+                test_ids_with_category[id] = "ucraine_war"
+            
+            # check if category is social media
+            if set(categories).intersection(category_social_media) and not set(categories).intersection(all_categories_without_social_media):
+                                        
+                # extract id
+                id = data.get("id", {})
+                            
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+                            
+                # add id and category to dict
+                test_ids_with_category[id] = "social_media"
+
+            # check if category is switzerland
+            if set(categories).intersection(category_switzerland) and not set(categories).intersection(all_categories_without_switzerland):
+                                                
+                # extract id
+                id = data.get("id", {})
+                                    
+                # extract content and add to dict with id
+                raw_content = data.get("content", {})
+                content = "\n".join(raw_content.values())
+                test_ids_with_content[id] = content
+                                    
+                # add id and category to dict
+                test_ids_with_category[id] = "switzerland"         
 
             # check if category is film
-            if set(categories).intersection(category_film) and not set(categories).intersection(category_corona) and not set(categories).intersection(category_football):
+            if set(categories).intersection(category_film) and not set(categories).intersection(all_categories_without_film):
 
                 # extract id
                 id = data.get("id", {})
@@ -114,7 +331,7 @@ def evaluation(test_file_path, train_categories_with_embeddings):
                 test_ids_with_category[id] = "film"
 			
             # check if category is corona
-            if set(categories).intersection(category_corona) and not set(categories).intersection(category_film) and not set(categories).intersection(category_football):
+            if set(categories).intersection(category_corona) and not set(categories).intersection(all_categories_without_corona):
             
                 # extract id
                 id = data.get("id", {})
@@ -128,7 +345,7 @@ def evaluation(test_file_path, train_categories_with_embeddings):
                 test_ids_with_category[id] = "corona"
 
             # check if category is football
-            if set(categories).intersection(category_football) and not set(categories).intersection(category_film) and not set(categories).intersection(category_corona):
+            if set(categories).intersection(category_football) and not set(categories).intersection(all_categories_without_football):
             
                 # extract id
                 id = data.get("id", {})
@@ -170,6 +387,9 @@ def evaluation(test_file_path, train_categories_with_embeddings):
         test_ids_with_predicted_category[test_id] = predicted_category
    
     # set up confusion matrix
+    sorted_test_ids_with_category = sorted(test_ids_with_category.items(), key=lambda x: x[0])
+    sorted_test_ids_with_predicted_category = sorted(test_ids_with_predicted_category.items(), key=lambda x: x[0])
+
     y_true = [true_category for _, true_category in sorted_test_ids_with_category]
     y_pred = [predicted_category for _, predicted_category in sorted_test_ids_with_predicted_category]
 
@@ -178,7 +398,7 @@ def evaluation(test_file_path, train_categories_with_embeddings):
     class_report = classification_report(y_true, y_pred, digits=4)
 
     # print classification report
-    print("\nClassification Report for:", test_file_path)
+    print("\nClassification Report for:", test_file_path[-40:-36])
     print(class_report)
 
 # define test data paths and category labels
