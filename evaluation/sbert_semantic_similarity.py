@@ -8,7 +8,7 @@ model.max_seq_length = 512
 model.eval()
 print("Max Sequence Length:", model.max_seq_length)
 
-# Set source file paths
+# set source file paths
 summary_file_paths_DE = ["define path(s)"]
 content_file_paths_DE = ["define path(s)"]
 content_file_paths_FR = ["define path(s)"]
@@ -222,7 +222,6 @@ for id, content in contents_RM.items():
     content_embedding = model.encode(content, convert_to_tensor=True)
     content_embeddings_RM[id] = content_embedding
 
-# look for matches
 # look for matches
 print("calculating cosine similarities and getting matches...")
 predicted_matches_DE = {}
