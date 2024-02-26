@@ -155,20 +155,20 @@ Note: For French, Italian and Romansh, the training data remains in German, whil
 
 ### Results
 
-Sentence SwissBERT achieves comparable results as the best-performing multilingual Sentence-BERT model (distiluse-base-multilingual-cased) and outperforms it for German and Romansh.
+Sentence SwissBERT achieves comparable or better results as the best-performing multilingual Sentence-BERT model in these tasks (distiluse-base-multilingual-cased). It outperforms it in all evaluation task, except for the text classification in Italian.
 
 | Evaluation task        |Swissbert |           |Sentence Swissbert|           |Sentence-BERT|           |
 |------------------------|----------|-----------|------------------|-----------|-------------|-----------|
 |                        |accuracy  |f1-score   |accuracy          |f1-score   |accuracy     |f1-score   |
-| Semantic Similarity DE | 83.80 %  | -         |**93.70 %**       |    -      |  87.70 %    |    -      |
-| Semantic Similarity FR | 82.30 %  | -         |**92.90 %**       |    -      |  91.10 %    |    -      |
-| Semantic Similarity IT | 83.00 %  | -         |**91.20 %**       |    -      |  89.80 %    |    -      |
-| Semantic Similarity RM | 78.80 %  | -         |**90.80 %**       |    -      |  67.90 %    |    -      |
-| Text Classification DE | 96.11 %  |  96.12 %  |  98.00 %         |**98.00 %**|  96.37 %    |  96.34 %  |
-| Text Classification FR | 99.22 %  |  99.23 %  |  99.22 %         |  99.23 %  |  99.35 %    |**99.35 %**|
-| Text Classification IT | 97.55 %  |  97.55 %  |  99.23 %         |  99.23 %  |  99.35 %    |**99.35 %**|
-| Text Classification RM | 81.14 %  |  79.01 %  |  96.49 %         |**96.49 %**|  94.41 %    |  94.36 %  |
+| Semantic Similarity DE | 87.20 %  | -         |**93.40 %**       |    -      |  91.80 %    |    -      |
+| Semantic Similarity FR | 84.97 %  | -         |**93.99 %**       |    -      |  93.19 %    |    -      |
+| Semantic Similarity IT | 84.17 %  | -         |**92.18 %**       |    -      |  91.58 %    |    -      |
+| Semantic Similarity RM | 83.17 %  | -         |**91.58 %**       |    -      |  73.35 %    |    -      |
+| Text Classification DE |          |        %  |                  |**78.49 %**|             |  77.23 %  |
+| Text Classification FR |          |        %  |                  |**77.18 %**|             |  76.83 %  |
+| Text Classification IT |          |        %  |                  |  76.65 %  |             |**76.90 %**|
+| Text Classification RM |          |        %  |                  |**77.20 %**|             |  65.35 %  |
 
 #### Baseline
 
-The baseline uses mean pooling embeddings from the last hidden state of the original swissbert model and the currently best-performing Sentence-BERT model [distiluse-base-multilingual-cased-v1](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1)
+The baseline uses mean pooling embeddings from the last hidden state of the original swissbert model and (in this task) best-performing Sentence-BERT model [distiluse-base-multilingual-cased-v1](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1)
