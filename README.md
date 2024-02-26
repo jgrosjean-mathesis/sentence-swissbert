@@ -149,7 +149,7 @@ The performance is measured via accuracy, i.e. the ratio of correct vs. total ma
 
 <!-- These are the evaluation metrics being used, ideally with a description of why. -->
 
-Articles with the topic tags "movies/tv series", "corona" and "football" (or related) are filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbors approach. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/tree/main/evaluation).
+A number of articles with defined topic tags are mapped to 10 categories, filtered from the corpus and split into training data (80%) and test data (20%). Subsequently, embeddings are set up for the train and test data. The test data is then classified using the training data via a k-nearest neighbors approach. The script can be found [here](https://github.com/jgrosjean-mathesis/sentence-swissbert/tree/main/evaluation).
 
 Note: For French, Italian and Romansh, the training data remains in German, while the test data comprises of translations. This provides insights in the model's abilities in cross-lingual transfer.
 
@@ -171,4 +171,4 @@ Sentence SwissBERT achieves comparable or better results as the best-performing 
 
 #### Baseline
 
-The baseline uses mean pooling embeddings from the last hidden state of the original swissbert model and (in this task) best-performing Sentence-BERT model [distiluse-base-multilingual-cased-v1](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1)
+The baseline uses mean pooling embeddings from the last hidden state of the original swissbert model and (in these tasks) best-performing Sentence-BERT model [distiluse-base-multilingual-cased-v1](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1).
