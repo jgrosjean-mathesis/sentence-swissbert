@@ -164,10 +164,10 @@ Sentence SwissBERT achieves comparable or better results as the best-performing 
 | Semantic Similarity FR | 84.97 %  |    --     |  **93.99 %**     |    --     |  93.19 %    |    --     |
 | Semantic Similarity IT | 84.17 %  |    --     |  **92.18 %**     |    --     |  91.58 %    |    --     |
 | Semantic Similarity RM | 83.17 %  |    --     |  **91.58 %**     |    --     |  73.35 %    |    --     |
-| Text Classification DE |   --     |           |       --         |**78.49 %**|     --      |  77.23 %  |
-| Text Classification FR |   --     |           |       --         |**77.18 %**|     --      |  76.83 %  |
-| Text Classification IT |   --     |           |       --         |  76.65 %  |     --      |**76.90 %**|
-| Text Classification RM |   --     |           |       --         |**77.20 %**|     --      |  65.35 %  |
+| Text Classification DE |   --     |  77.93 %  |       --         |**78.49 %**|     --      |  77.23 %  |
+| Text Classification FR |   --     |  69.62 %  |       --         |**77.18 %**|     --      |  76.83 %  |
+| Text Classification IT |   --     |  67.09 %  |       --         |  76.65 %  |     --      |**76.90 %**|
+| Text Classification RM |   --     |  43.79 %  |       --         |**77.20 %**|     --      |  65.35 %  |
 
 #### Baseline
 
