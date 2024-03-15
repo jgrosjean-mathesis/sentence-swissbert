@@ -5,7 +5,7 @@
 The [SwissBERT](https://huggingface.co/ZurichNLP/swissbert) model was finetuned via self-supervised [SimCSE](http://dx.doi.org/10.18653/v1/2021.emnlp-main.552) (Gao et al., EMNLP 2021) for sentence embeddings, using ~1.5 million Swiss news articles from up to 2023 retrieved via [Swissdox@LiRI](https://t.uzh.ch/1hI). Following the [Sentence Transformers](https://huggingface.co/sentence-transformers) approach (Reimers and Gurevych,
 2019), the average of the last hidden states (pooler_type=avg) is used as sentence representation.
 
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/6564ab8d113e2baa55830af0/owPx_nx0evzbl8aGm-UzQ.png)
+<img width="1051" alt="training-visual" src="https://github.com/jgrosjean-mathesis/sentence-swissbert/assets/152688373/cb16ee99-d39b-4669-a0fc-df99ccde0080">
 
 ## Model Details
 
