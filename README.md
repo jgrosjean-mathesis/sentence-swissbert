@@ -136,7 +136,7 @@ The fine-tuning script can be accessed [here](https://github.com/jgrosjean-mathe
 
 The two evaluation tasks make use of the [20 Minuten dataset](https://www.zora.uzh.ch/id/eprint/234387/) compiled by Kew et al. (2023), which contains Swiss news articles with topic tags and summaries. Parts of the dataset were automatically translated to French, Italian using a Google Cloud API and to Romash via a [Textshuttle](https://textshuttle.com/en) API.
 
-#### Evaluation via Semantic Textual Similarity
+#### Evaluation via Document Retrieval
 
 <!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
 
