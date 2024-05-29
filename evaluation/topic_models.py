@@ -38,7 +38,7 @@ def set_up_language_adapter(swissbert_model, language):
         exit()
 
 def generate_swissbert_embedding(sentence, sentence_model, sentence_tokenizer):
-    """Generates sentence embeddings using SwissBERT"""
+    """generates sentence embeddings using SwissBERT"""
     inputs = sentence_tokenizer(sentence, padding=True, truncation=True, return_tensors="pt", max_length=512)
     with torch.no_grad():
         outputs = sentence_model(**inputs)
@@ -61,8 +61,8 @@ def set_up_model(model_name, language):
             set_up_language_adapter(sentence_model, language)
             return topic_model, sentence_model, sentence_tokenizer
         elif model_name == "sentence-swissbert":
-            sentence_model = AutoModel.from_pretrained("/Users/juri/Dropbox/Studium/Masterarbeit/Models/model_frozen")
-            sentence_tokenizer = AutoTokenizer.from_pretrained("/Users/juri/Dropbox/Studium/Masterarbeit/Models/model_frozen")
+            sentence_model = AutoModel.from_pretrained("jgrosjean-mathesis/sentence-swissbert")
+            sentence_tokenizer = AutoTokenizer.from_pretrained("jgrosjean-mathesis/sentence-swissbert")
             set_up_language_adapter(sentence_model, language)
             return topic_model, sentence_model, sentence_tokenizer
     elif model_name == "sentence-bert":
